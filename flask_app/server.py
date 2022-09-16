@@ -24,9 +24,8 @@ def post_scores():
         name = content['name']
         score = content['score']
         if name not in d or (name in d and d[name] < score):
-            #d[name] = score
             d.update({name:score})
-        return jsonify(" ".join(d.keys()))
+        return jsonify("Your score has been successfully added")
     return jsonify('Error: Request is not JSON')
 
 
