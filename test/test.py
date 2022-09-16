@@ -1,9 +1,27 @@
-import unittest
+import pytest
 
 
-class MyTestCase(unittest.TestCase):
+
+
+
+
+
+
+
+
+
+
+
+
+
+def test_home(client):
+    res = client.get('/')
+
+    expected="home"
+    assert set(expected)==set(res.get_data(as_text= True))
+
     def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
+        self.assertEqual(True, False)  # add assertion here"""
 
 
 if __name__ == '__main__':
