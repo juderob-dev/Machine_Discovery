@@ -4,6 +4,13 @@ import json
 app = Flask(__name__)
 
 d = {}
+data = {}
+
+"""with open('scores.pickle', 'wb') as handle:
+    pickle.dump(dict, handle)
+
+with open('scores.pickle', 'rb') as handle:
+    d = pickle.load(handle)"""
 
 @app.route('/')
 def home():
@@ -17,18 +24,24 @@ def post_scores():
         name = content['name']
         score = content['score']
         if name not in d or (name in d and d[name] < score):
-            d[name] = score
-        return jsonify('score has been successfully added to leaderboard')
+            #d[name] = score
+            d.update({name:score})
+        return jsonify(" ".join(d.keys()))
     return jsonify('Error: Request is not JSON')
 
 
 @app.route('/scores/<rank>/', methods=['GET'])
 def get_rank(rank):
-    if rank > len(d):
-        return "404 Not Found: The rank you are looking for does not exist in the leaderboard: Try decreasing the rank."
+    rank = int(rank)
+    if rank > len(d) or rank < 1:
+        return "404 Not Found: The rank you are looking for does not exist in the leaderboard."
     sorted_dic = sorted(d, key=d.get, reverse=True)
     ranking = {rank:name for rank, name in enumerate(sorted_dic, 1)}
-    return jsonify("name: " + key + "," + "value: " + value for key, value in d.items() if d == ranking[rank])
+    filtered = {key:value for key, value in d.items() if key == ranking[rank]}
+    key,value = list(filtered.items())[0]
+    data['name'] = key
+    data['score'] = value
+    return json.dumps(data)
 
 if __name__ =='__main__':
     app.run()
